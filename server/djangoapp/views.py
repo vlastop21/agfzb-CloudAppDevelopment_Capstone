@@ -20,6 +20,10 @@ logger = logging.getLogger(__name__)
 # Create an `about` view to render a static about page
 # def about(request):
 # ...
+# Create your views here.
+def about(request):
+    context = {}
+    return render(request, 'static_page.html', context)
 
 
 # Create a `contact` view to return a static contact page

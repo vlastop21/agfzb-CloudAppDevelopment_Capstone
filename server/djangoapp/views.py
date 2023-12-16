@@ -28,19 +28,58 @@ def about(request):
 
 # Create a `contact` view to return a static contact page
 #def contact(request):
-
+def contact(request):
+    context = {}
+    return render(request, 'contact.html', context)
 # Create a `login_request` view to handle sign in request
 # def login_request(request):
 # ...
+def login_request(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            
+            return redirect('index')
+        else:
+           
+            context = {'error': 'Invalid username or password'}
+            return render(request, 'login.html', context)
+    else:
+        return render(request, 'login.html')
 
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
 # ...
+def logout_request(request):
+    logout(request)
+   
+    return redirect('index')
 
 # Create a `registration_request` view to handle sign up request
 # def registration_request(request):
 # ...
-
+def registration_request(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+           
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return redirect('index')
+        else:
+         
+            context = {'form': form}
+            return render(request, 'signup.html', context)
+    else:
+        form = UserCreationForm()
+        context = {'form': form}
+        return render(request, 'signup.html', context)
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     context = {}
